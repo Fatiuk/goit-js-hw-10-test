@@ -1,6 +1,6 @@
 import SlimSelect from 'slim-select';
 import Notiflix from 'notiflix';
-import { fetchBreeds, fetchCatByBreed } from './js/cat-api-service';
+import { CatApiService } from './js/cat-api-service';
 import Loader from './js/components/loader';
 
 const refs = {
@@ -10,12 +10,15 @@ const refs = {
   catInfo: document.querySelector('.cat-info'),
 };
 
+const catApiServiceInstance = new CatApiService();
+
 const loader = new Loader({
   hidden: true,
 });
 
 // Fetch cat breeds and initialize SlimSelect for breed selection
-fetchBreeds()
+catApiServiceInstance
+  .fetchBreeds()
   .then(({ data }) => {
     createOptionMarkup(data);
     new SlimSelect({
@@ -44,7 +47,8 @@ function handleCatByBreed(event) {
   refs.catInfo.innerHTML = ' ';
   loader.show();
 
-  fetchCatByBreed(selectedBreed)
+  catApiServiceInstance
+    .fetchCatByBreed(selectedBreed)
     .then(({ data }) => {
       loader.hide();
       // Destructuring the data object
